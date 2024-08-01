@@ -25,9 +25,10 @@ builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
 
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<IArtistService, ArtistService>();
-
 builder.Services.AddTransient<ITrackService, TrackService>();
+builder.Services.AddTransient<IAlbumService, AlbumService>();
 builder.Services.AddTransient<IUserPlaylistService, UserPlaylistService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
