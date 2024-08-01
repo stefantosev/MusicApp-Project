@@ -20,6 +20,12 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
+
+builder.Services.AddTransient<IOrderService, OrderService>();
+builder.Services.AddTransient<ITrackService, TrackService>();
+builder.Services.AddTransient<IUserPlaylistService, UserPlaylistService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,12 +40,6 @@ else
     app.UseHsts();
 }
 
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
-
-builder.Services.AddTransient<IOrderService, OrderService>();
-builder.Services.AddTransient<ITrackService, TrackService>();
-builder.Services.AddTransient<IUserPlaylistService, UserPlaylistService>();
 //builder.Services.AddControllersWithViews().AddNewtonsoftJson(options =>
     //options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
