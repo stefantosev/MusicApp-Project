@@ -11,21 +11,21 @@ using MusicApp.Service.Interface;
 
 namespace MusicApp.Web.Controllers
 {
-    public class TracksController : Controller
+    public class ArtistsController : Controller
     {
-        private readonly ITrackService _trackService;
+        private readonly IArtistService _artistService;
 
-        public TracksController(ITrackService trackService)
+        public ArtistsController(IArtistService artistService)
         {
-            _trackService = trackService;
+            _artistService = artistService;
         }
 
         public IActionResult Index()
         {
-            return View(_trackService.GetAllTracks());
+            return View(_artistService.GetAllArtists());
         }
 
-        // GET: Tracks/Details/5
+        // GET: Artist/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -33,7 +33,7 @@ namespace MusicApp.Web.Controllers
                 return NotFound();
             }
 
-            var track = _trackService.GetDetailsForTrack(id);
+            var track = _artistService.GetDetailsForArtist(id);
             if (track == null)
             {
                 return NotFound();
@@ -42,30 +42,30 @@ namespace MusicApp.Web.Controllers
             return View(track);
         }
 
-        // GET: Tracks/Create
+        // GET: Artist/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Tracks/Create
+        // POST: Artist/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Track track)
+        public IActionResult Create(Artist artist)
         {
             if (ModelState.IsValid)
             {
-                track.Id = Guid.NewGuid();
-                _trackService.CreateNewTrack(track);
+                artist.Id = Guid.NewGuid();
+                _artistService.CreateNewArtist(artist);
                 return RedirectToAction(nameof(Index));
             }
-            return View(track);
+            return View(artist);
         }
 
 
-        // GET: Tracks/Edit/5
+        // GET: Artist/Edit/5
         public IActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace MusicApp.Web.Controllers
                 return NotFound();
             }
 
-            var track = _trackService.GetDetailsForTrack(id);
-            if (track == null)
+            var artist = _artistService.GetDetailsForArtist(id);
+            if (artist == null)
             {
                 return NotFound();
             }
-            return View(track);
+            return View(artist);
         }
 
-        // POST: Tracks/Edit/5
+        // POST: Artist/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, Track track)
+        public IActionResult Edit(Guid id, Artist artist)
         {
-            if (id != track.Id)
+            if (id != artist.Id)
             {
                 return NotFound();
             }
@@ -97,7 +97,7 @@ namespace MusicApp.Web.Controllers
             {
                 try
                 {
-                    _trackService.UpdateExistingTrack(track);
+                    _artistService.UpdateExistingArtist(artist);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -105,10 +105,10 @@ namespace MusicApp.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(track);
+            return View(artist);
         }
 
-        // GET: Tracks/Delete/5
+        // GET: Artist/Delete/5
         public IActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -116,7 +116,7 @@ namespace MusicApp.Web.Controllers
                 return NotFound();
             }
 
-            var tracks = _trackService.GetDetailsForTrack(id);
+            var tracks = _artistService.GetDetailsForArtist(id);
             if (tracks == null)
             {
                 return NotFound();
@@ -125,12 +125,12 @@ namespace MusicApp.Web.Controllers
             return View(tracks);
         }
 
-        // POST: Tracks/Delete/5
+        // POST: Artist/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            _trackService.DeleteTrack(id);
+            _artistService.DeleteArtist(id);
             return RedirectToAction(nameof(Index));
         }
 

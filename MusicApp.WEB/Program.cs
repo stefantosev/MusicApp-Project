@@ -24,6 +24,8 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
 
 builder.Services.AddTransient<IOrderService, OrderService>();
+builder.Services.AddTransient<IArtistService, ArtistService>();
+
 builder.Services.AddTransient<ITrackService, TrackService>();
 builder.Services.AddTransient<IUserPlaylistService, UserPlaylistService>();
 var app = builder.Build();
