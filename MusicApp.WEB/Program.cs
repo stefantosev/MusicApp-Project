@@ -1,6 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MusicApp.WEB.Data;
+using MusicApp.Domain.Identity;
+using MusicApp.Repository;
+using MusicApp.Repository.Implementation;
+using MusicApp.Repository.Interface;
+using MusicApp.Service.Implementation;
+using MusicApp.Service.Interface;
+//using MusicApp.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +16,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
@@ -27,6 +33,15 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
+
+builder.Services.AddTransient<IOrderService, OrderService>();
+builder.Services.AddTransient<ITrackService, TrackService>();
+builder.Services.AddTransient<IUserPlaylistService, UserPlaylistService>();
+//builder.Services.AddControllersWithViews().AddNewtonsoftJson(options =>
+    //options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
