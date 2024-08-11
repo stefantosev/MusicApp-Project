@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MusicApp.Domain;
 using MusicApp.Repository;
+using MusicApp.Service.Implementation;
 using MusicApp.Service.Interface;
 
 namespace MusicApp.Web.Controllers
@@ -14,10 +15,12 @@ namespace MusicApp.Web.Controllers
     public class AlbumsController : Controller
     {
         private readonly IAlbumService albumService;
-
-        public AlbumsController(IAlbumService albumService)
+        private readonly IArtistService artistService;
+        
+        public AlbumsController(IAlbumService albumService, IArtistService artistService)
         {
             this.albumService = albumService;
+            this.artistService = artistService;
         }
 
 
@@ -25,6 +28,7 @@ namespace MusicApp.Web.Controllers
         // GET: Albums
         public async Task<IActionResult> Index()
         {
+            ViewBag.ArtistId = new SelectList(artistService.GetAllArtists(), "Id", "Name");
             return View(albumService.GetAllAlbums());
         }
 
@@ -37,6 +41,7 @@ namespace MusicApp.Web.Controllers
             }
 
             var album = albumService.GetDetailsForAlbum(id);
+            ViewBag.ArtistId = new SelectList(artistService.GetAllArtists(), "Id", "Name");
             if (album == null)
             {
                 return NotFound();
@@ -48,15 +53,16 @@ namespace MusicApp.Web.Controllers
         // GET: Albums/Create
         public IActionResult Create()
         {
+           
+            ViewBag.ArtistId = new SelectList(artistService.GetAllArtists(), "Id", "Name"); 
+
+
             return View();
         }
 
-        // POST: Albums/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Album album)
+        public IActionResult Create(Album album)
         {
             if (ModelState.IsValid)
             {
@@ -67,6 +73,9 @@ namespace MusicApp.Web.Controllers
             return View(album);
         }
 
+
+
+
         // GET: Albums/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
@@ -76,6 +85,9 @@ namespace MusicApp.Web.Controllers
             }
 
             var album = albumService.GetDetailsForAlbum(id);
+            
+            ViewBag.ArtistId = new SelectList(artistService.GetAllArtists(), "Id", "Name");
+
             if (album == null)
             {
                 return NotFound();
@@ -119,6 +131,7 @@ namespace MusicApp.Web.Controllers
             }
 
             var album = albumService.GetDetailsForAlbum(id);
+            ViewBag.ArtistId = new SelectList(artistService.GetAllArtists(), "Id", "Name");
             if (album == null)
             {
                 return NotFound();

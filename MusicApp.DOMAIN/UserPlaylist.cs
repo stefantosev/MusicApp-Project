@@ -12,12 +12,12 @@ namespace MusicApp.Domain
 
         //ShoppingCart 
 
-        public string Name { get; set; }
-        public string? UserId { get; set; }
-        public User User { get; set; }
+        public string? Name { get; set; }
+        public string? OwnerId { get; set; }
+        public User? Owner { get; set; }
 
         //public DateTime CreatedAt { get; set; }
         
-        public ICollection<TrackInPlaylist> TracksInPlaylist { get; set; }
+        public virtual ICollection<TrackInPlaylist>? TracksInPlaylist { get; set; }
     }
 }

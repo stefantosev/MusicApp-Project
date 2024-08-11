@@ -9,7 +9,7 @@ namespace MusicApp.Domain
     public class TrackInOrder : BaseEntity
     {
         public Guid TrackId { get; set; }
-        public Track Track { get; set; }
+        public Track? Track { get; set; }
         public Guid OrderId { get; set; }
         public Order Order { get; set; }
         public int Quantity { get; set; }

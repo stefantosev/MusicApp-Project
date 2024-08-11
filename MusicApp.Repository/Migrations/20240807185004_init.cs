@@ -16,8 +16,8 @@ namespace MusicApp.Repository.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
@@ -72,17 +72,16 @@ namespace MusicApp.Repository.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ArtistId = table.Column<int>(type: "int", nullable: false),
-                    ArtistId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ArtistId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Albums", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Albums_Artists_ArtistId1",
-                        column: x => x.ArtistId1,
+                        name: "FK_Albums_Artists_ArtistId",
+                        column: x => x.ArtistId,
                         principalTable: "Artists",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -199,7 +198,8 @@ namespace MusicApp.Repository.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    userId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -208,8 +208,7 @@ namespace MusicApp.Repository.Migrations
                         name: "FK_Orders_AspNetUsers_OwnerId",
                         column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -217,15 +216,15 @@ namespace MusicApp.Repository.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserPlaylists", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserPlaylists_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_UserPlaylists_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                 });
@@ -235,8 +234,8 @@ namespace MusicApp.Repository.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Duration = table.Column<TimeSpan>(type: "time", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: true),
                     AlbumId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ArtistId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -308,9 +307,9 @@ namespace MusicApp.Repository.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Albums_ArtistId1",
+                name: "IX_Albums_ArtistId",
                 table: "Albums",
-                column: "ArtistId1");
+                column: "ArtistId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -387,9 +386,11 @@ namespace MusicApp.Repository.Migrations
                 column: "ArtistId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserPlaylists_UserId",
+                name: "IX_UserPlaylists_OwnerId",
                 table: "UserPlaylists",
-                column: "UserId");
+                column: "OwnerId",
+                unique: true,
+                filter: "[OwnerId] IS NOT NULL");
         }
 
         /// <inheritdoc />

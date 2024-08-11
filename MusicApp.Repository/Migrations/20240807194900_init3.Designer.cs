@@ -12,8 +12,8 @@ using MusicApp.Repository;
 namespace MusicApp.Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240801170610_init")]
-    partial class init
+    [Migration("20240807194900_init3")]
+    partial class init3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -164,22 +164,18 @@ namespace MusicApp.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ArtistId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("ArtistId1")
+                    b.Property<Guid>("ArtistId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ArtistId1");
+                    b.HasIndex("ArtistId");
 
                     b.ToTable("Albums");
                 });
@@ -191,14 +187,12 @@ namespace MusicApp.Repository.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Bio")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("BirthDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -287,8 +281,10 @@ namespace MusicApp.Repository.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("OwnerId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("userId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -309,11 +305,10 @@ namespace MusicApp.Repository.Migrations
                     b.Property<Guid?>("ArtistId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("time");
+                    b.Property<string>("Duration")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -377,15 +372,16 @@ namespace MusicApp.Repository.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("OwnerId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OwnerId")
+                        .IsUnique()
+                        .HasFilter("[OwnerId] IS NOT NULL");
 
                     b.ToTable("UserPlaylists");
                 });
@@ -445,7 +441,7 @@ namespace MusicApp.Repository.Migrations
                 {
                     b.HasOne("MusicApp.Domain.Artist", "Artist")
                         .WithMany("Albums")
-                        .HasForeignKey("ArtistId1")
+                        .HasForeignKey("ArtistId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -455,10 +451,8 @@ namespace MusicApp.Repository.Migrations
             modelBuilder.Entity("MusicApp.Domain.Order", b =>
                 {
                     b.HasOne("MusicApp.Domain.Identity.User", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Order")
+                        .HasForeignKey("OwnerId");
 
                     b.Navigation("Owner");
                 });
@@ -520,11 +514,11 @@ namespace MusicApp.Repository.Migrations
 
             modelBuilder.Entity("MusicApp.Domain.UserPlaylist", b =>
                 {
-                    b.HasOne("MusicApp.Domain.Identity.User", "User")
-                        .WithMany("Playlists")
-                        .HasForeignKey("UserId");
+                    b.HasOne("MusicApp.Domain.Identity.User", "Owner")
+                        .WithOne("Playlists")
+                        .HasForeignKey("MusicApp.Domain.UserPlaylist", "OwnerId");
 
-                    b.Navigation("User");
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("MusicApp.Domain.Album", b =>
@@ -541,7 +535,10 @@ namespace MusicApp.Repository.Migrations
 
             modelBuilder.Entity("MusicApp.Domain.Identity.User", b =>
                 {
-                    b.Navigation("Playlists");
+                    b.Navigation("Order");
+
+                    b.Navigation("Playlists")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MusicApp.Domain.Order", b =>

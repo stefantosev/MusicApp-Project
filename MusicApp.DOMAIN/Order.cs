@@ -9,7 +9,7 @@ namespace MusicApp.Domain
 {
     public class Order : BaseEntity
     {
-        public string OwnerId { get; set; }
+        public Guid userId { get; set; }
         public User Owner { get; set; }
         public IEnumerable<TrackInOrder> TracksInOrders { get; set; }
     }

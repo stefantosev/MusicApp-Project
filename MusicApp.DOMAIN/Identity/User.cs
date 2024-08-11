@@ -13,6 +13,7 @@ namespace MusicApp.Domain.Identity
         public string? LastName { get; set; }
         public string? Address { get; set; }
 
-        public ICollection<UserPlaylist> Playlists { get; set; }
+        public virtual UserPlaylist Playlists { get; set; }
+        public virtual ICollection<Order>? Order { get; set;}
     }
 }

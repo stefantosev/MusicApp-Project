@@ -8,11 +8,11 @@ namespace MusicApp.Domain
 {
     public class Artist : BaseEntity
     {
-        public string Name { get; set; }
-        public string Bio { get; set; }
+        public string? Name { get; set; }
+        public string? Bio { get; set; }
         public DateTime? BirthDate { get; set; }
-        public ICollection<Album> Albums { get; set; }
-        public ICollection<Track> Tracks { get; set; }
+        public ICollection<Album>? Albums { get; set; }
+        public ICollection<Track>? Tracks { get; set; }
 
     }
 }
