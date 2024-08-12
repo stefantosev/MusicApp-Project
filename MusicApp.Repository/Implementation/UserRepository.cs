@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MusicApp.Domain;
+using MusicApp.Domain.Identity;
 using MusicApp.Repository.Interface;
 using System;
 using System.Collections.Generic;
@@ -9,27 +9,31 @@ using System.Threading.Tasks;
 
 namespace MusicApp.Repository.Implementation
 {
-    public class Repository<T> : IRepository<T> where T : BaseEntity
+    public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext context;
-        private DbSet<T> entities;
+        private DbSet<User> entities;
         string errorMessage = string.Empty;
 
-        public Repository(ApplicationDbContext context)
+        public UserRepository(ApplicationDbContext context)
         {
             this.context = context;
-            entities = context.Set<T>();
+            entities = context.Set<User>();
         }
-        public IEnumerable<T> GetAll()
+        public IEnumerable<User> GetAll()
         {
             return entities.AsEnumerable();
         }
 
-        public T Get(Guid? id)
+        public User Get(string id)
         {
-            return entities.SingleOrDefault(s => s.Id == id);
+            return entities
+               .Include(z => z.Playlists)
+               .Include("Playlists.TracksInPlaylist")
+               .Include("Playlists.TracksInPlaylist.Track")
+               .SingleOrDefault(s => s.Id == id);
         }
-        public void Insert(T entity)
+        public void Insert(User entity)
         {
             if (entity == null)
             {
@@ -39,7 +43,7 @@ namespace MusicApp.Repository.Implementation
             context.SaveChanges();
         }
 
-        public void Update(T entity)
+        public void Update(User entity)
         {
             if (entity == null)
             {
@@ -49,7 +53,7 @@ namespace MusicApp.Repository.Implementation
             context.SaveChanges();
         }
 
-        public void Delete(T entity)
+        public void Delete(User entity)
         {
             if (entity == null)
             {
@@ -59,15 +63,5 @@ namespace MusicApp.Repository.Implementation
             context.SaveChanges();
         }
 
-        T IRepository<T>.Update(T entity)
-        {
-            if (entity == null)
-            {
-                throw new ArgumentNullException("entity");
-            }
-            entities.Update(entity);
-            context.SaveChanges();
-            return entity;
-        }
     }
 }

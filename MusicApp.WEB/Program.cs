@@ -22,12 +22,14 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
+builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<IArtistService, ArtistService>();
 builder.Services.AddTransient<ITrackService, TrackService>();
 builder.Services.AddTransient<IAlbumService, AlbumService>();
 builder.Services.AddTransient<IUserPlaylistService, UserPlaylistService>();
+builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
 
 var app = builder.Build();
 

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MusicApp.Domain;
+using MusicApp.Domain.DTO;
 using MusicApp.Repository;
 using MusicApp.Service.Interface;
 
@@ -16,12 +19,14 @@ namespace MusicApp.Web.Controllers
         private readonly ITrackService _trackService;
         private readonly IAlbumService _albumService;
         private readonly IArtistService _artistService;
+        private readonly IShoppingCartService _shoppingCartService;
 
-        public TracksController(ITrackService trackService, IAlbumService albumService, IArtistService artistService)
+        public TracksController(ITrackService trackService, IAlbumService albumService, IArtistService artistService, IShoppingCartService shoppingCartService)
         {
             this._trackService = trackService;
             _albumService = albumService;
             _artistService = artistService;
+            _shoppingCartService = shoppingCartService;
         }
 
 
@@ -171,5 +176,70 @@ namespace MusicApp.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize]
+        public IActionResult AddProductToCart(Guid Id)
+        {
+            var result = _shoppingCartService.getProductInfo(Id);
+            if (result != null)
+            {
+                return View(result);
+            }
+            return View();
+        }
+
+
+        [HttpPost]
+        public IActionResult AddProductToCart(AddToCart model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var result = _shoppingCartService.AddProductToShoppingCart(userId, model);
+
+            if (result != null)
+            {
+                return RedirectToAction("Index", "ShoppingCarts");
+            }
+            else { return View(model); }
+        }
+
+        //private bool ProductExists(Guid id)
+        //{
+        //    return _trackService.trac(id) != null;
+        //}
+
+
+        public IActionResult AddToCart(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var product = _trackService.GetDetailsForTrack(id);
+
+            TrackInPlaylist ps = new TrackInPlaylist();
+
+            if (product != null)
+            {
+                ps.TrackId = product.Id;
+            }
+
+            return View(ps);
+        }
+
+        [HttpPost]
+        public IActionResult AddToCartConfirmed(TrackInPlaylist model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            _shoppingCartService.AddToShoppingConfirmed(model, userId);
+
+
+
+            return RedirectToAction("Index", "ShoppingCarts");
+        }
     }
+
+
+
+
 }

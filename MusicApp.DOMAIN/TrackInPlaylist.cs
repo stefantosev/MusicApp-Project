@@ -18,6 +18,9 @@ namespace MusicApp.Domain
 
         public UserPlaylist? Playlist { get; set; }
         //public DateTime AddedAt { get; set; }
+        public int Quantity { get; set; }
+        // TODO
+        // Quantity 
 
     }
 }
