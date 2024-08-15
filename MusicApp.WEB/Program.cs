@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MusicApp.Domain;
 using MusicApp.Domain.Identity;
 using MusicApp.Repository;
 using MusicApp.Repository.Implementation;
@@ -9,6 +10,8 @@ using MusicApp.Service.Interface;
 //using MusicApp.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSettings"));
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -30,6 +33,7 @@ builder.Services.AddTransient<ITrackService, TrackService>();
 builder.Services.AddTransient<IAlbumService, AlbumService>();
 builder.Services.AddTransient<IUserPlaylistService, UserPlaylistService>();
 builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
 var app = builder.Build();
 
