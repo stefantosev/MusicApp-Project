@@ -11,6 +11,7 @@ namespace MusicApp.Domain
     {
         public string? Title { get; set; }
         public String? Duration { get; set; }
+        public string? Image { get; set; }
         public Guid AlbumId { get; set; }
         public Guid? ArtistId { get; set; }
         public Album? Album { get; set; }

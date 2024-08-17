@@ -22,30 +22,22 @@ namespace MusicApp.Repository.Implementation
 
         public List<Order> GetAllOrders()
         {
-            throw new NotImplementedException();
+            return entities
+              .Include(z => z.TracksInOrders)
+              .Include(z => z.Owner)
+              .Include("TracksInOrders.Track")
+              .Include("TracksInOrders.Track.Artist")
+              .ToList();
         }
 
         public Order GetDetailsForOrder(BaseEntity id)
         {
-            throw new NotImplementedException();
+            return entities
+               .Include(z => z.TracksInOrders)
+               .Include(z => z.Owner)
+               .Include("TracksInOrders.Track")
+               .Include("TracksInOrders.Track.Artist")
+               .SingleOrDefaultAsync(z => z.Id == id.Id).Result;
         }
-        // TODO
-        //public List<Order> GetAllOrders()
-        //{
-        //    return entities
-        //      .Include(z => z.ProductsInOrder)
-        //      .Include(z => z.Owner)
-        //      .Include("ProductsInOrder.Product")
-        //      .ToList();
-        //}
-
-        //public Order GetDetailsForOrder(BaseEntity id)
-        //{
-        //    return entities
-        //       .Include(z => z.ProductsInOrder)
-        //       .Include(z => z.Owner)
-        //       .Include("ProductsInOrder.Product")
-        //       .SingleOrDefaultAsync(z => z.Id == id.Id).Result;
-        //}
     }
 }

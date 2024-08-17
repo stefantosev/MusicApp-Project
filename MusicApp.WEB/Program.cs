@@ -35,6 +35,9 @@ builder.Services.AddTransient<IUserPlaylistService, UserPlaylistService>();
 builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
+builder.Services.AddControllersWithViews().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
