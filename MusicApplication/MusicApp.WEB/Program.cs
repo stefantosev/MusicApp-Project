@@ -13,10 +13,28 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSettings"));
 
+var connectionString1 = builder.Configuration.GetConnectionString("DefaultConnection") 
+                        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+var connectionString2 = builder.Configuration.GetConnectionString("AnotherConnection") 
+                        ?? throw new InvalidOperationException("Connection string 'AnotherConnection' not found.");
+
+
+
+
+
+
+
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+// Register DbContexts with their respective connection strings
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString1));
+
+
+builder.Services.AddDbContext<SecondDbContext>(options =>
+    options.UseSqlServer(connectionString2));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
