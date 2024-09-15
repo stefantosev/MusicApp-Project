@@ -7,6 +7,7 @@ using MusicApp.Repository.Implementation;
 using MusicApp.Repository.Interface;
 using MusicApp.Service.Implementation;
 using MusicApp.Service.Interface;
+using Stripe;
 //using MusicApp.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,12 +44,15 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
+builder.Services.AddScoped(typeof(IBookRepository), typeof(BookRepository));
 builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
+
 
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<IArtistService, ArtistService>();
 builder.Services.AddTransient<ITrackService, TrackService>();
 builder.Services.AddTransient<IAlbumService, AlbumService>();
+builder.Services.AddTransient<IBookService, BookService>();
 builder.Services.AddTransient<IUserPlaylistService, UserPlaylistService>();
 builder.Services.AddTransient<IShoppingCartService, ShoppingCartService>();
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));

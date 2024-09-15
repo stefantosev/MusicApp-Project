@@ -1,0 +1,40 @@
+﻿@model IEnumerable<MusicApp.Domain.BookApp.TransformedBook>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="text-center mb-4">Партнерска продавница</h1>
+
+<div class="container">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Name)</th>
+                    <th>@Html.DisplayNameFor(model => model.Description)</th>
+                    <th>@Html.DisplayNameFor(model => model.Image)</th>
+                    <th>@Html.DisplayNameFor(model => model.Price)</th>
+                    <th>@Html.DisplayNameFor(model => model.AuthorName)</th>
+                    <th>@Html.DisplayNameFor(model => model.PublisherName)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>
+                        <img src="@Html.DisplayFor(modelItem => item.Image)" alt="@item.Name" class="img-thumbnail" style="max-width: 100px;" />
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.Price)</td>
+                    <td>@Html.DisplayFor(modelItem => item.AuthorName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.PublisherName)</td>
+                 
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
